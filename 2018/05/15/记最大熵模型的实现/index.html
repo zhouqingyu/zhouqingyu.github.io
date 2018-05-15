@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Just can&#39;t get enough">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2018-05-15T11:50:25.029Z">
+<meta property="og:updated_time" content="2018-05-15T11:59:59.116Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记最大熵模型的实现">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
@@ -309,6 +309,7 @@ MathJax.Hub.Config({
 });
 </script>
 <p>最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，实现模型。</p>
+<a id="more"></a>
 <p>在此之间，先简要了解一下模型原理。</p>
 <h1 id="原理介绍">原理介绍</h1>
 最大熵从字面意思就是可以知道熵值最大，具体是指模型<span class="math inline">\(p(y|x)\)</span>满足熵值最大。即（下式条件熵展开）
@@ -402,22 +403,6 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
       
 
       
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/05/15/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-          </div>
-        </div>
-      
 
       
       
@@ -490,7 +475,7 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
