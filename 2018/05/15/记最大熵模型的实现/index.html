@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Just can&#39;t get enough">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2018-05-15T11:34:43.438Z">
+<meta property="og:updated_time" content="2018-05-15T11:50:25.029Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记最大熵模型的实现">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
@@ -309,7 +309,7 @@ MathJax.Hub.Config({
 });
 </script>
 <p>最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，实现模型。</p>
-<p>在此之间，先简要了解一下其原理。</p>
+<p>在此之间，先简要了解一下模型原理。</p>
 <h1 id="原理介绍">原理介绍</h1>
 最大熵从字面意思就是可以知道熵值最大，具体是指模型<span class="math inline">\(p(y|x)\)</span>满足熵值最大。即（下式条件熵展开）
 <span class="math display">\[\begin{align}
@@ -330,14 +330,14 @@ f_i(x,y) = \begin{cases} 1, &amp; \text{if } x = \text{something and } y = \text
 E_{\tilde{p}}(f_i) &amp;= E_p (f_i) \label{eq:ep_f} \\
 \sum_{x,y} \tilde{p}(x,y)f_i(x,y) &amp;= \sum_{x,y} \tilde{p}(x)p(y|x)f_i(x,y)
 \end{align}\]</span>
-<p>式()中<span class="math inline">\(x\)</span>的先验<span class="math inline">\(p(x)\)</span>以经验分布<span class="math inline">\(\tilde{p}(x)\)</span>估计。</p>
+<p>式(\ref{eq:ep_f})中<span class="math inline">\(x\)</span>的先验<span class="math inline">\(p(x)\)</span>以经验分布<span class="math inline">\(\tilde{p}(x)\)</span>估计。</p>
 最大熵模型可以描述为：
 <span class="math display">\[\begin{align}\label{eq:origin}
 obj. \quad &amp; p^{\ast} = \arg\max_p H[p] \\
 s.t. \quad &amp; E_{\tilde{p}} (f_i) = E_p (f_i) \quad i=1,2,3,\dots,k \\
 &amp; \sum_y p(y|x) = 1
 \end{align}\]</span>
-<p>是一个在满足观测数据（训练数据）约束条件下的，熵值最大的模型。式()称为最大熵模型的<strong>原问题</strong>（对比后文将要提到的<strong>对偶问题</strong>）。</p>
+<p>是一个在满足观测数据（训练数据）约束条件下的，熵值最大的模型。式(\ref{eq:origin})称为最大熵模型的<strong>原问题</strong>（对比后文将要提到的<strong>对偶问题</strong>）。</p>
 对于原问题进行求解是较为困难的，因此通过一定条件（拉格朗日对偶性）进行转换
 <span class="math display">\[\begin{equation}
 L(w, p) = H[p] - \sum_i w_i(E_{\tilde{p}} (f_i) - E_p (f_i)) - w_0 (\sum_y p(y|x) - 1)
@@ -358,24 +358,20 @@ Z_w(x) = \sum_y \text{exp} \left(\sum_i w_if_i(x, y)\right)
 <span class="math display">\[\begin{equation}\label{eq:max_lik}
 \arg\max_w \prod_{x, y} p_w(y|x)^{\tilde{p}(x,y)} \iff \arg\max_w \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x)
 \end{equation}\]</span>
-最大换个符号就是最小，在将公式()带入有：
+最大换个符号就是最小，在将公式(\ref{eq:model_pw})带入有：
 <span class="math display">\[\begin{align}\label{eq:loss}
 J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
 &amp;= \sum_{x,y} \tilde{p}(x,y) \log Z_w(x) - \sum_{x,y} \tilde{p}(x,y)\sum_i w_if_i(x,y)
 \end{align}\]</span>
-剩下的就是利用数值优化方法解()的最小值。涉及到梯度的数值优化算法，需要计算梯度
+剩下的就是利用数值优化方法解(\ref{eq:loss})的最小值。涉及到梯度的数值优化算法，需要计算梯度
 <span class="math display">\[\begin{equation}\label{eq:grad}
 \frac{\partial}{\partial w_i}J(w) = E_{p_w}[f_i] - E_{\tilde{p}}[f_i]
 \end{equation}\]</span>
 <h1 id="模型实现">模型实现</h1>
-说了这么多，如果省去推导与证明过程，结果还是比较简单的。
-<h4>
-模型参数表示
-</h4>
-<span class="math display">\[p_w(y|x) = \frac{ \text{exp} \left(\sum_i w_if_i(x, y)\right)}{Z_w(x)}\]</span> <span class="math display">\[Z_w(x) = \sum_y \text{exp} \left(\sum_i w_if_i(x, y)\right)\]</span>
-<h4>
-参数估计
-</h4>
+<p>说了这么多，如果省去推导与证明过程，结果还是比较简单的。</p>
+<h2 id="模型表示">模型表示</h2>
+<p><span class="math display">\[p_w(y|x) = \frac{ \text{exp} \left(\sum_i w_if_i(x, y)\right)}{Z_w(x)}\]</span> <span class="math display">\[Z_w(x) = \sum_y \text{exp} \left(\sum_i w_if_i(x, y)\right)\]</span></p>
+<h2 id="参数估计">参数估计</h2>
 <p><span class="math display">\[J(w) = \sum_{x,y} \tilde{p}(x,y) \log Z_w(x) - \sum_{x,y} \tilde{p}(x,y)\sum_i w_if_i(x,y)\]</span> <span class="math display">\[\frac{\partial}{\partial w_i}J(w) = E_{p_w}[f_i] - E_{\tilde{p}}[f_i]\]</span></p>
 <p>终于开始编码啦~</p>
 <h1 id="未完待续">未完待续</h1>
@@ -540,11 +536,7 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理介绍"><span class="nav-number">1.</span> <span class="nav-text">原理介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型实现"><span class="nav-number">2.</span> <span class="nav-text">模型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">
-模型参数表示
-</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">
-参数估计
-</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#未完待续"><span class="nav-number">3.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理介绍"><span class="nav-number">1.</span> <span class="nav-text">原理介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型实现"><span class="nav-number">2.</span> <span class="nav-text">模型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模型表示"><span class="nav-number">2.1.</span> <span class="nav-text">模型表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数估计"><span class="nav-number">2.2.</span> <span class="nav-text">参数估计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#未完待续"><span class="nav-number">3.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
             
 
           </div>
