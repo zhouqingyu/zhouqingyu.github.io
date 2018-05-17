@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="最大熵模型," />
+  <meta name="keywords" content="最大熵模型,判别式,Python," />
 
 
 
@@ -80,14 +80,14 @@
 
 
 <meta name="description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
-<meta name="keywords" content="最大熵模型">
+<meta name="keywords" content="最大熵模型,判别式,Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记最大熵模型的实现">
 <meta property="og:url" content="https://zhouqingyu.github.io/2018/05/15/记最大熵模型的实现/index.html">
 <meta property="og:site_name" content="Just can&#39;t get enough">
 <meta property="og:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-05-15T12:25:15.153Z">
+<meta property="og:updated_time" content="2018-05-17T03:03:54.061Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记最大熵模型的实现">
 <meta name="twitter:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都可以用到。这里将以文本分类为例，">
@@ -426,8 +426,42 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
 <p><span class="math display">\[p_w(y|x) = \frac{ \text{exp} \left(\sum_i w_if_i(x, y)\right)}{Z_w(x)}\]</span> <span class="math display">\[Z_w(x) = \sum_y \text{exp} \left(\sum_i w_if_i(x, y)\right)\]</span></p>
 <h2 id="参数估计">参数估计</h2>
 <p><span class="math display">\[J(w) = \sum_{x,y} \tilde{p}(x,y) \log Z_w(x) - \sum_{x,y} \tilde{p}(x,y)\sum_i w_if_i(x,y)\]</span> <span class="math display">\[\frac{\partial}{\partial w_i}J(w) = E_{p_w}[f_i] - E_{\tilde{p}}[f_i]\]</span></p>
-<p>终于开始编码啦~</p>
-<h1 id="未完待续">未完待续</h1>
+<h2 id="coding">Coding</h2>
+<p>终于开始编码啦！在实现过程中，最关键部分是<strong>特征函数的定义</strong>。</p>
+<p>以下列文本为例，第一列是类别，第二列是上下文信息。 <span class="math display">\[
+\begin{array}{l|l}
+\text{label} &amp; \text{context} \\
+\hline
+\text{Outdoor}  &amp; \text{Sunny Dry}\\
+\text{Outdoor}  &amp; \text{Sunny Happy Humid}\\
+\text{Indoor}   &amp; \text{Rainy Sad Dry}\\
+\text{Indoor}   &amp; \text{Rainy Sad Humid}\\
+\text{Indoor}   &amp; \text{Rainy Sad Humid}
+\end{array}
+\]</span> 特征可以使用unigram、bigram、trigram等或其他形式也行，这里假设只使用unigram。</p>
+<p>那么上下文集合 <span class="math display">\[C = \{ \text{Sunny Dry}, \text{Sunny Happy Humid}, \text{Rainy Sad Dry}, \text{Rainy Sad Humid} \}\]</span></p>
+<p>上下文的unigram集合 <span class="math display">\[U = \{\text{Sunny}, \text{Dry}, \text{Happy}, \text{Humid}, \text{Rainy}, \text{Sad}\}\]</span></p>
+<p>标签集合 <span class="math display">\[L = \{\text{Outdoor}, \text{Indoor}\}\]</span></p>
+<p>特征函数可以定义为： <span class="math display">\[ f_{u,l}(x, y)= 
+ \begin{cases}
+  1 \quad &amp; \text{if } u \in x \text{ and } y = l \\
+  0 \quad &amp; others
+ \end{cases}
+\]</span> 其中<span class="math inline">\(u \in U \text{ and } l \in L\)</span>，<span class="math inline">\((u, l)\)</span>是从训练数据中获取的，如(Sunny,Outdoor)是一个特征函数，而(Sad,Outdoor)不是。另外，对于训练数据，模型输入变量空间为上下文集合<span class="math inline">\(x \in C\)</span>，目标变量空间为标签集合<span class="math inline">\(y \in L\)</span>。所以特征矩阵表示为 <span class="math display">\[
+\begin{array}{l|cccccccc}
+f_{u, l} \text{ \ } (x_i, y_i) &amp; (x_0, y_0) &amp; (x_0, y_1) &amp; (x_1, y_0) &amp; (x_1, y_1) &amp; (x_2, y_0) &amp; (x_2, y_1) &amp; (x_3, y_0) &amp; (x_3, y_1)\\
+\hline
+\text{Sunny,Outdoor}    &amp; 1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+\text{Dry,Outdoor}      &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+\text{Happy,Outdoor}    &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+\text{Humid,Outdoor}    &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+\text{Dry,Indoor}       &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\
+\text{Humid,Indoor}     &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1\\
+\text{Rainy,Indoor}     &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1\\
+\text{Sad,Indoor}       &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1
+\end{array}
+\]</span></p>
+<p><em>未完待续</em></p>
 
       
     </div>
@@ -446,6 +480,10 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
         <div class="post-tags">
           
             <a href="/tags/最大熵模型/" rel="tag"># 最大熵模型</a>
+          
+            <a href="/tags/判别式/" rel="tag"># 判别式</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
           
         </div>
       
@@ -549,7 +587,7 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -592,7 +630,7 @@ J(w) &amp;= - \sum_{x,y} \tilde{p}(x,y)\log p_w(y|x) \\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理介绍"><span class="nav-number">1.</span> <span class="nav-text">原理介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型实现"><span class="nav-number">2.</span> <span class="nav-text">模型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模型表示"><span class="nav-number">2.1.</span> <span class="nav-text">模型表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数估计"><span class="nav-number">2.2.</span> <span class="nav-text">参数估计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#未完待续"><span class="nav-number">3.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理介绍"><span class="nav-number">1.</span> <span class="nav-text">原理介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型实现"><span class="nav-number">2.</span> <span class="nav-text">模型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模型表示"><span class="nav-number">2.1.</span> <span class="nav-text">模型表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数估计"><span class="nav-number">2.2.</span> <span class="nav-text">参数估计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#coding"><span class="nav-number">2.3.</span> <span class="nav-text">Coding</span></a></li></ol></li></ol></div>
             
 
           </div>
