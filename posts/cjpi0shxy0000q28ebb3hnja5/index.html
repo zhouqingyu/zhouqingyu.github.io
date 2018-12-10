@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="KL divergence,Cross entropy,相对熵," />
 
 
 
@@ -79,13 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Just can&#39;t get enough">
-<meta property="og:url" content="https://zhouqingyu.github.io/index.html">
+<meta name="description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  KL divergence is a natural way to measure the difference between two">
+<meta name="keywords" content="KL divergence,Cross entropy,相对熵">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KL Divergence &amp; Cross Entropy (转)">
+<meta property="og:url" content="https://zhouqingyu.github.io/posts/cjpi0shxy0000q28ebb3hnja5/index.html">
 <meta property="og:site_name" content="Just can&#39;t get enough">
+<meta property="og:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  KL divergence is a natural way to measure the difference between two">
 <meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-12-10T07:54:07.821Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Just can&#39;t get enough">
+<meta name="twitter:title" content="KL Divergence &amp; Cross Entropy (转)">
+<meta name="twitter:description" content="MathJax.Hub.Config({   TeX: {     equationNumbers: { autoNumber: &quot;AMS&quot;},     extensions: [&quot;AMSmath.js&quot;, &quot;AMSsymbols.js&quot;]   } });  KL divergence is a natural way to measure the difference between two">
 
 
 
@@ -115,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="https://zhouqingyu.github.io/"/>
+  <link rel="canonical" href="https://zhouqingyu.github.io/posts/cjpi0shxy0000q28ebb3hnja5/"/>
 
 
 
 
 
-  <title>Just can't get enough</title>
+  <title>KL Divergence & Cross Entropy (转) | Just can't get enough</title>
   
 
 
@@ -150,8 +155,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left 
-  page-home">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -244,9 +248,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -276,9 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/posts/cjpi0shxy0000q28ebb3hnja5/" itemprop="url">KL Divergence & Cross Entropy (转)</a></h1>
+          <h1 class="post-title" itemprop="name headline">KL Divergence & Cross Entropy (转)</h1>
         
 
         <div class="post-meta">
@@ -326,6 +328,16 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/posts/cjpi0shxy0000q28ebb3hnja5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/posts/cjpi0shxy0000q28ebb3hnja5/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -350,8 +362,7 @@
       
 
       
-        
-          <script type="text/x-mathjax-config">
+        <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: {
     equationNumbers: { autoNumber: "AMS"},
@@ -360,14 +371,19 @@ MathJax.Hub.Config({
 });
 </script>
 <p>KL divergence is a natural way to measure the difference between two probability distributions. The entropy <span class="math inline">\(H(p)\)</span> of a distribution <span class="math inline">\(p\)</span> gives the minimum possible number of bits per message that would be needed (on average) to losslessly encode events drawn from <span class="math inline">\(p\)</span>. Achieving this bound would require using an optimal code designed for <span class="math inline">\(p\)</span>, which assigns shorter code words to higher probability events. <span class="math inline">\(D_{KL}(p \parallel q)\)</span> can be interpreted as the expected number of extra bits per message needed to encode events drawn from true distribution <span class="math inline">\(p\)</span>, if using an optimal code for distribution <span class="math inline">\(q\)</span> rather than <span class="math inline">\(p\)</span>. It has some nice properties for comparing distributions. For example, if <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> are equal, then the KL divergence is 0.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/posts/cjpi0shxy0000q28ebb3hnja5/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+<a id="more"></a>
+<p>The cross entropy <span class="math inline">\(H(p,q)\)</span> can be interpreted as the number of bits per message needed (on average) to encode events drawn from true distribution p, if using an optimal code for distribution q. Note the difference: <span class="math inline">\(D_{KL}(p \parallel q)\)</span> measures the average number of extra bits per message, whereas H(p,q) measures the average number of total bits per message. It's true that, for fixed p, H(p,q) will grow as <span class="math inline">\(q\)</span> becomes increasingly different from p. But, if <span class="math inline">\(p\)</span> isn't held fixed, it's hard to interpret H(p,q) as an absolute measure of the difference, because it grows with the entropy of p.</p>
+KL divergence and cross entropy are related as:
+<span class="math display">\[\begin{equation}
+D_{KL}(p \parallel q)=H(p,q)−H(p)
+\end{equation}\]</span>
+<p>We can see from this expression that, when <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> are equal, the cross entropy is not zero; rather, it's equal to the entropy of p.</p>
+<p>Cross entropy commonly shows up in loss functions in machine learning. In many of these situations, <span class="math inline">\(p\)</span> is treated as the 'true' distribution, and <span class="math inline">\(q\)</span> as the model that we're trying to optimize. For example, in classification problems, the commonly used cross entropy loss (aka log loss), measures the cross entropy between the empirical distribution of the labels (given the inputs) and the distribution predicted by the classifier. The empirical distribution for each data point simply assigns probability 1 to the class of that data point, and 0 to all other classes. Side note: The cross entropy in this case turns out to be proportional to the negative log likelihood, so minimizing it is equivalent maximizing the likelihood.</p>
+<p>Note that <span class="math inline">\(p\)</span> (the empirical distribution in this example) is fixed. So, it would be equivalent to say that we're minimizing the KL divergence between the empirical distribution and the predicted distribution. As we can see in the expression above, the two are related by the additive term <span class="math inline">\(H(p)\)</span> (the entropy of the empirical distribution). Because <span class="math inline">\(p\)</span> is fixed, <span class="math inline">\(H(p)\)</span> doesn't change with the parameters of the model, and can be disregarded in the loss function. We might still want to talk about the KL divergence for theoretical/philosophical reasons but, in this case, they're equivalent from the perspective of solving the optimization problem. This may not be true for other uses of cross entropy and KL divergence, where <span class="math inline">\(p\)</span> might vary.</p>
+<p>t-SNE fits a distribution <span class="math inline">\(p\)</span> in the input space. Each data point is mapped into the embedding space, where corresponding distribution <span class="math inline">\(q\)</span> is fit. The algorithm attempts to adjust the embedding to minimize <span class="math inline">\(D_{KL}(p \parallel q)\)</span>. As above, <span class="math inline">\(p\)</span> is held fixed. So, from the perspective of the optimization problem, minimizing the KL divergence and minimizing the cross entropy are equivalent. Indeed, van der Maaten and Hinton (2008) say in section 2: &quot;A natural measure of the faithfulness with which <span class="math inline">\(q_{j|i}\)</span> models <span class="math inline">\(p_{j|i}\)</span> is the Kullback-Leibler divergence (which is in this case equal to the cross-entropy up to an additive constant).&quot;</p>
+<p>van der Maaten and Hinton (2008). Visualizing data using t-SNE.</p>
+<p>原文见<a href="https://stats.stackexchange.com/questions/265966/why-do-we-use-kullback-leibler-divergence-rather-than-cross-entropy-in-the-t-sne" target="_blank" rel="noopener">StackExchange</a></p>
+
       
     </div>
     
@@ -382,168 +398,40 @@ MathJax.Hub.Config({
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://zhouqingyu.github.io/posts/cjpi0nkbw0000n48ewrpxe4kg/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nero.">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Just can't get enough">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/posts/cjpi0nkbw0000n48ewrpxe4kg/" itemprop="url">记最大熵模型的实现</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T17:04:46+08:00">
-                2018-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/KL-divergence/" rel="tag"># KL divergence</a>
           
-
+            <a href="/tags/Cross-entropy/" rel="tag"># Cross entropy</a>
           
-            
+            <a href="/tags/相对熵/" rel="tag"># 相对熵</a>
           
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  TeX: {
-    equationNumbers: { autoNumber: "AMS"},
-    extensions: ["AMSmath.js", "AMSsymbols.js"]
-  }
-});
-</script>
-<p>最大熵模型是统计机器学习中常用的判别式模型（Discriminative model），在许多分类任务中都能用到。这里将以文本分类为例，实现模型。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/posts/cjpi0nkbw0000n48ewrpxe4kg/#more" rel="contents">
-              Read more &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/cjpi0nkbw0000n48ewrpxe4kg/" rel="next" title="记最大熵模型的实现">
+                <i class="fa fa-chevron-left"></i> 记最大熵模型的实现
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -553,10 +441,11 @@ MathJax.Hub.Config({
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -564,6 +453,17 @@ MathJax.Hub.Config({
 
 
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -795,6 +695,10 @@ MathJax.Hub.Config({
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -841,6 +745,30 @@ MathJax.Hub.Config({
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'zhouqingyu',
+            repo: 'zhouqingyu.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '125490717319bf5e5c1e1c3c6b73f68c97fb8a9b',
+            
+                client_id: '155d867e7ceded5bf8c1'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
